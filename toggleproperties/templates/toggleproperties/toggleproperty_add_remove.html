@@ -1,0 +1,89 @@
+<span class="toggleproperty-add-remove property-{{property_type}}">
+    <a class="btn {% if is_toggled %} is-toggled btn-danger{% else %}btn-success{% endif %}"
+       id="toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}"
+       {% if has_tooltip %}
+       rel="tooltip"
+       title="
+           {% if is_toggled %}
+               {{ property_tooltip_on }}
+           {% else %}
+               {{ property_tooltip_off }}
+           {% endif %}
+       {% endif %}
+       "
+       href="#">
+
+        {% if property_icon %}
+            <i class="{{ property_icon }}"></i>
+        {% endif %}
+
+        <span class="toggleproperties-label">
+            {% if is_toggled %}
+                {{ property_label_on }}
+            {% else %}
+                {{ property_label_off }}
+            {% endif %}
+        </span>
+
+        {% if show_count %}
+            <span id="count-{{ property_type }}-{{ content_type_id }}-{{ object_id }}" class="badge badge-important">{{ count }}</span>
+        {% endif %}
+    </a>
+</span>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}").click(function(){
+        if($(this).hasClass("is-toggled")){
+            $.ajax({
+                url: "{% url toggleproperty_ajax_remove %}",
+                type: "POST",
+                data: {
+                    property_type: "{{ property_type }}",
+                    content_type_id: {{ content_type_id }},
+                    object_id: {{ object_id }}
+                },
+                dataType: 'json',
+                success: function(data){
+                    $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}")
+                        .removeClass('btn-danger is-toggled')
+                        .addClass('btn-success')
+                        .tooltip('hide')
+                        .attr('data-original-title', "{{ property_tooltip_off }}")
+                        .tooltip('fixTitle')
+                        .tooltip('show');
+                    $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }} .toggleproperties-label").text("{{ property_label_off }}");
+                    if (data['count'] !== undefined)
+                        $('#count-{{ property_type }}-{{ content_type_id }}-{{ object_id }}').text(data.count);
+                }
+            });
+        } else {
+            $.ajax({
+                url: "{% url toggleproperty_ajax_add %}",
+                type: "POST",
+                data: {
+                    property_type: "{{ property_type }}",
+                    content_type_id: {{ content_type_id }},
+                    object_id: {{ object_id }}
+                },
+                dataType: 'json',
+                success: function(data){
+                    $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}")
+                        .removeClass('btn-success')
+                        .addClass('btn-danger is-toggled')
+                        .tooltip('hide')
+                        .attr('data-original-title', "{{ property_tooltip_on }}")
+                        .tooltip('fixTitle')
+                        .tooltip('show');
+                    $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }} .toggleproperties-label").text("{{ property_label_on }}");
+                    if (data['count'] !== undefined)
+                        $('#count-{{ property_type }}-{{ content_type_id }}-{{ object_id }}').text(data.count);
+                }
+            });
+        }
+
+        return false;
+    });
+});
+</script>
+

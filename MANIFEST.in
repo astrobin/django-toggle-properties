@@ -1,0 +1,2 @@
+include COPYING
+recursive-include toggleproperties/templates/toggleproperties *.html
