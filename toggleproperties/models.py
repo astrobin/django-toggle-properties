@@ -91,6 +91,7 @@ class ToggleProperty(models.Model):
 @receiver(models.signals.post_delete)
 def remove_toggleproperty(sender, **kwargs):
     instance = kwargs.get('instance')
-    content_type = ContentType.objects.get_for_model(ToggleProperty)
-    ToggleProperty.objects.filter(content_type=content_type, object_id=instance.id).delete()
+    if hasattr(instance, 'id'):
+        content_type = ContentType.objects.get_for_model(ToggleProperty)
+        ToggleProperty.objects.filter(content_type=content_type, object_id=instance.id).delete()
 
