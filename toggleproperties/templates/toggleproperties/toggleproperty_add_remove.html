@@ -1,5 +1,6 @@
 <span class="toggleproperty-add-remove property-{{property_type}}">
-    <a class="btn {% if is_toggled %} is-toggled btn-danger{% else %}btn-success{% endif %}"
+    <button class="btn btn-primary{% if is_toggled %} active{% endif %}"
+       data-toggle="button"
        id="toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}"
        {% if has_tooltip %}
        rel="tooltip"
@@ -10,8 +11,7 @@
                {{ property_tooltip_off }}
            {% endif %}
        {% endif %}
-       "
-       href="#">
+       ">
 
         {% if property_icon %}
             <i class="{{ property_icon }}"></i>
@@ -28,13 +28,14 @@
         {% if show_count %}
             <span id="count-{{ property_type }}-{{ content_type_id }}-{{ object_id }}" class="badge badge-important">{{ count }}</span>
         {% endif %}
-    </a>
+    </button>
 </span>
 
 <script type="text/javascript">
 $(document).ready(function(){
     $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}").click(function(){
-        if($(this).hasClass("is-toggled")){
+        {% if request.user.is_authenticated %}
+        if($(this).hasClass("active")){
             $.ajax({
                 url: "{% url toggleproperty_ajax_remove %}",
                 type: "POST",
@@ -46,8 +47,7 @@ $(document).ready(function(){
                 dataType: 'json',
                 success: function(data){
                     $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}")
-                        .removeClass('btn-danger is-toggled')
-                        .addClass('btn-success')
+                        .removeClass('active')
                         .tooltip('hide')
                         .attr('data-original-title', "{{ property_tooltip_off }}")
                         .tooltip('fixTitle')
@@ -69,8 +69,7 @@ $(document).ready(function(){
                 dataType: 'json',
                 success: function(data){
                     $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}")
-                        .removeClass('btn-success')
-                        .addClass('btn-danger is-toggled')
+                        .addClass('active')
                         .tooltip('hide')
                         .attr('data-original-title', "{{ property_tooltip_on }}")
                         .tooltip('fixTitle')
@@ -83,6 +82,9 @@ $(document).ready(function(){
         }
 
         return false;
+        {% else %} {# Anonymous user #}
+        window.location = '/accounts/login/?next={{request.path}}'
+        {% endif %}
     });
 });
 </script>
