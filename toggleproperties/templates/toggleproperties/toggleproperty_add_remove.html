@@ -17,6 +17,7 @@
             <i class="{{ property_icon }}"></i>
         {% endif %}
 
+        {% if property_label_on or property_label_off %}
         <span class="toggleproperties-label">
             {% if is_toggled %}
                 {{ property_label_on }}
@@ -24,6 +25,7 @@
                 {{ property_label_off }}
             {% endif %}
         </span>
+        {% endif %}
 
         {% if show_count %}
             <span id="count-{{ property_type }}-{{ content_type_id }}-{{ object_id }}" class="badge badge-important">{{ count }}</span>
