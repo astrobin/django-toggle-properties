@@ -36,7 +36,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
     $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}").click(function(){
-        {% if request.user.is_authenticated %}
+        {% if request.user and request.user.is_authenticated %}
         if($(this).hasClass("active")){
             $.ajax({
                 url: "{% url toggleproperty_ajax_remove %}",

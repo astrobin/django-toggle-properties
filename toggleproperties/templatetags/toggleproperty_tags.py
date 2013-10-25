@@ -22,7 +22,7 @@ def is_toggled(property_type, object, user):
 def add_remove_toggleproperty(context, property_type, object, user):
     tp = None
     content_type = ContentType.objects.get_for_model(object)
-    if user.is_authenticated():
+    if user and user.is_authenticated():
         tp = ToggleProperty.objects.toggleproperties_for_object(property_type, object, user=user)
         if tp:
             tp = tp[0]
