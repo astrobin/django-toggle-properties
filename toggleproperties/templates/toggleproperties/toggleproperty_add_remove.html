@@ -49,7 +49,6 @@ $(document).ready(function(){
                 dataType: 'json',
                 success: function(data){
                     $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}")
-                        .removeClass('active')
                         .tooltip('hide')
                         .attr('data-original-title', "{{ property_tooltip_off }}")
                         .tooltip('fixTitle')
@@ -71,7 +70,6 @@ $(document).ready(function(){
                 dataType: 'json',
                 success: function(data){
                     $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}")
-                        .addClass('active')
                         .tooltip('hide')
                         .attr('data-original-title', "{{ property_tooltip_on }}")
                         .tooltip('fixTitle')
@@ -82,8 +80,6 @@ $(document).ready(function(){
                 }
             });
         }
-
-        return false;
         {% else %} {# Anonymous user #}
         window.location = '/accounts/login/?next={{request.path}}'
         {% endif %}
