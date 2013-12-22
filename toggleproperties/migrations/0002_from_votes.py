@@ -3,30 +3,31 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+from django.db.utils import DatabaseError
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        from djangoratings.models import Vote
-
-        for vote in Vote.objects.filter(score__gt = 3):
-            tp = orm['toggleproperties.toggleproperty'].objects.filter(
-                property_type = "like",
-                user = vote.user,
-                content_type = vote.content_type,
-                object_id = vote.object_id)
-
-            if not tp:
-                user = orm['auth.user'].objects.get(pk = vote.user.pk)
-                ct = orm['contenttypes.contenttype'].objects.get(pk = vote.content_type.pk)
-                tp = orm['toggleproperties.toggleproperty'](
+        try:
+            for vote in orm['djangoratings.vote'].objects.filter(score__gt = 3):
+                tp = orm['toggleproperties.toggleproperty'].objects.filter(
                     property_type = "like",
-                    user = user,
-                    content_type = ct,
-                    object_id = vote.object_id,
-                    created_on = vote.date_added)
-                tp.save()
+                    user = vote.user,
+                    content_type = vote.content_type,
+                    object_id = vote.object_id)
 
+                if not tp:
+                    user = orm['auth.user'].objects.get(pk = vote.user.pk)
+                    ct = orm['contenttypes.contenttype'].objects.get(pk = vote.content_type.pk)
+                    tp = orm['toggleproperties.toggleproperty'](
+                        property_type = "like",
+                        user = user,
+                        content_type = ct,
+                        object_id = vote.object_id,
+                        created_on = vote.date_added)
+                    tp.save()
+        except DatabaseError:
+            pass
 
     def backwards(self, orm):
         raise RuntimeError('Cannot reverse this migration.')
@@ -91,6 +92,19 @@ class Migration(DataMigration):
             'object_id': ('django.db.models.fields.TextField', [], {}),
             'property_type': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
+        },
+        'djangoratings.vote': {
+            'Meta': {'unique_together': "(('content_type', 'object_id', 'key', 'user', 'ip_address', 'cookie'),)", 'object_name': 'Vote'},
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'votes'", 'to': "orm['contenttypes.ContentType']"}),
+            'cookie': ('django.db.models.fields.CharField', [], {'max_length': '32', 'null': 'True', 'blank': 'True'}),
+            'date_added': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
+            'date_changed': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'ip_address': ('django.db.models.fields.IPAddressField', [], {'max_length': '15'}),
+            'key': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
+            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
+            'score': ('django.db.models.fields.IntegerField', [], {}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'votes'", 'null': 'True', 'to': "orm['auth.User']"})
         }
     }
 
