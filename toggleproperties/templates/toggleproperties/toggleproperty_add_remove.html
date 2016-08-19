@@ -39,7 +39,7 @@ $(document).ready(function(){
         {% if request.user and request.user.is_authenticated %}
         if($(this).hasClass("active")){
             $.ajax({
-                url: "{% url toggleproperty_ajax_remove %}",
+                url: "{% url 'toggleproperty_ajax_remove' %}",
                 type: "POST",
                 data: {
                     property_type: "{{ property_type }}",
@@ -60,7 +60,7 @@ $(document).ready(function(){
             });
         } else {
             $.ajax({
-                url: "{% url toggleproperty_ajax_add %}",
+                url: "{% url 'toggleproperty_ajax_add' %}",
                 type: "POST",
                 data: {
                     property_type: "{{ property_type }}",
