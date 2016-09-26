@@ -4,14 +4,9 @@
        id="toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}"
        {% if has_tooltip %}
        rel="tooltip"
-       title="
-           {% if is_toggled %}
-               {{ property_tooltip_on }}
-           {% else %}
-               {{ property_tooltip_off }}
-           {% endif %}
        {% endif %}
-       ">
+       title="{% if is_toggled %}{{property_tooltip_on}}{% else %}{{property_tooltip_off}}{% endif %}"
+    >
 
         {% if property_icon %}
             <i class="{{ property_icon }}"></i>
