@@ -17,7 +17,7 @@
             {% if is_toggled %}
                 {{ property_label_on }}
             {% else %}
-                {{ property_label_off }}
+                {{ property_label_off }}
             {% endif %}
         </span>
         {% endif %}
@@ -37,7 +37,7 @@ $(document).ready(function(){
                 url: "{% url 'toggleproperty_ajax_remove' %}",
                 type: "POST",
                 data: {
-                    property_type: "{{ property_type }}",
+                    property_type: "{{ property_type }}",
                     content_type_id: {{ content_type_id }},
                     object_id: {{ object_id }}
                 },
