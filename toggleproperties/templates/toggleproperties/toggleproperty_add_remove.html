@@ -32,6 +32,7 @@
 $(document).ready(function(){
     $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}").click(function(){
         {% if request.user and request.user.is_authenticated %}
+        $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }} .toggleproperties-label").text("...");
         if($(this).hasClass("active")){
             $.ajax({
                 url: "{% url 'toggleproperty_ajax_remove' %}",
@@ -41,6 +42,7 @@ $(document).ready(function(){
                     content_type_id: {{ content_type_id }},
                     object_id: {{ object_id }}
                 },
+                timeout: 10000,
                 dataType: 'json',
                 success: function(data){
                     $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}")
@@ -62,6 +64,7 @@ $(document).ready(function(){
                     content_type_id: {{ content_type_id }},
                     object_id: {{ object_id }}
                 },
+                timeout: 10000,
                 dataType: 'json',
                 success: function(data){
                     $("#toggleproperty-{{ property_type }}-{{ content_type_id }}-{{ object_id }}")
