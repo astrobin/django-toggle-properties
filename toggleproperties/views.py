@@ -6,7 +6,11 @@ from django.template import RequestContext
 from models import ToggleProperty
 from forms import DeleteTogglePropertyForm
 from django.http import HttpResponse
-from django.utils import simplejson
+
+try:
+    from django.utils import simplejson
+except ImportError:
+    import simplejson
 
 @login_required
 def ajax_add_toggleproperty(request):
