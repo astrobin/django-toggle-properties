@@ -11,18 +11,18 @@ except ImportError:
 
 class TogglePropertyManager(models.Manager):
     def toggleproperties_for_user(self, property_type, user):
-        return self.get_query_set().filter(user=user, property_type=property_type)
+        return self.get_queryset().filter(user=user, property_type=property_type)
 
     def toggleproperties_for_model(self, property_type, model, user=None):
         content_type = ContentType.objects.get_for_model(model)
-        qs = self.get_query_set().filter(content_type=content_type, property_type=property_type)
+        qs = self.get_queryset().filter(content_type=content_type, property_type=property_type)
         if user:
             qs = qs.filter(user=user)
         return qs
 
     def toggleproperties_for_object(self, property_type, obj, user=None):
         content_type = ContentType.objects.get_for_model(type(obj))
-        qs = self.get_query_set().filter(content_type=content_type,
+        qs = self.get_queryset().filter(content_type=content_type,
                                          property_type=property_type,
                                          object_id=obj.pk)
         if user:
@@ -37,7 +37,7 @@ class TogglePropertyManager(models.Manager):
 
         content_type = ContentType.objects.get_for_model(object_list[0])
 
-        qs = self.get_query_set().filter(content_type=content_type,
+        qs = self.get_queryset().filter(content_type=content_type,
                                          property_type=property_type,
                                          object_id__in=object_ids)
         counters = qs.values('object_id').annotate(count=models.Count('object_id'))
@@ -55,7 +55,7 @@ class TogglePropertyManager(models.Manager):
 
     def toggleproperty_for_user(self, property_type, obj, user):
         content_type = ContentType.objects.get_for_model(type(obj))
-        return self.get_query_set().get(content_type=content_type,
+        return self.get_queryset().get(content_type=content_type,
                                     property_type=property_type,
                                     user=user, object_id=obj.pk)
 
